@@ -11,8 +11,6 @@ class Todo {
             return false;
         }
         this.updateStyle();
-        // render
-        // add events
     }
 
     isValidSelector() {
@@ -77,7 +75,7 @@ class Todo {
             const removeBtn = item.querySelector('.btn.remove');
 
             editBtn.addEventListener('click', () => {
-                this.initTodoItemEditing(item);
+                this.initTodoItemEditing(i);
             })
             removeBtn.addEventListener('click', () => {
                 this.deleteTask(i);
@@ -85,8 +83,29 @@ class Todo {
         }
     }
 
-    initTodoItemEditing(itemDOM) {
-        console.log('Inicijuojamas TODO redagavimas...');
+    initTodoItemEditing(taskIndex) {
+        const task = this.taskList[taskIndex];
+
+        const lightbox = document.querySelector('.lightbox');
+        const formUpdate = lightbox.querySelector('form.update');
+        const textarea = formUpdate.querySelector('textarea');
+        const buttonCancel = formUpdate.querySelector('button.cancel');
+        const buttonUpdate = formUpdate.querySelector('button.update');
+
+        lightbox.dataset.form = 'update';
+        textarea.value = task.text;
+        lightbox.classList.add('show');
+
+        buttonCancel.addEventListener('click', e => {
+            e.preventDefault();
+            lightbox.classList.remove('show');
+        })
+        buttonUpdate.addEventListener('click', e => {
+            e.preventDefault();
+            this.taskList[taskIndex].text = textarea.value;
+            lightbox.classList.remove('show');
+            this.renderList();
+        })
     }
 }
 

@@ -124,7 +124,8 @@ h1 + * {
         background-color: #3b3;
         color: #fff;
     }
-    .btn.edit {
+    .btn.edit,
+    .btn.update {
         background-color: #36f;
         color: #fff;
     }
@@ -140,13 +141,17 @@ h1 + * {
     }
 
 form {
-    display: inline-block;
+    display: none;
     width: 100%;
     padding: 20px;
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 0 4px 8px #0003;
 }
+    .lightbox[data-form="add"] form.add,
+    .lightbox[data-form="update"] form.update {
+        display: inline-block;
+    }
     form > .title {
         display: inline-block;
         width: 100%;
