@@ -41,11 +41,7 @@ buttonCancel.addEventListener('click', e => {
 
 buttonAdd.addEventListener('click', e => {
     e.preventDefault();
-    const task = {
-        text: textarea.value,
-        isCompleted: false
-    }
-    todo.addTask(task);
+    todo.addTask(textarea.value);
     textarea.value = '';
     lightbox.classList.remove('show');
 })
