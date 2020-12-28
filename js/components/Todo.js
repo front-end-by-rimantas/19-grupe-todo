@@ -4,6 +4,9 @@ class Todo {
 
         this.DOM = null;
         this.taskList = [];
+        this.lastCreatedID = 0;
+
+        this.editForm = null;
     }
 
     init() {
@@ -11,6 +14,8 @@ class Todo {
             return false;
         }
         this.updateStyle();
+        this.getInfoFromLocalStorage();
+        this.renderList();
     }
 
     isValidSelector() {
@@ -29,9 +34,19 @@ class Todo {
     }
 
     // CRUD: create
-    addTask(task) {
+    addTask(text) {
+        const task = {
+            id: ++this.lastCreatedID,
+            text: text,
+            isCompleted: false
+        }
+
         this.taskList.push(task);
         this.renderList();
+
+        localStorage.setItem(task.id, JSON.stringify(task));
+        localStorage.setItem('last-id', this.lastCreatedID);
+
         return true;
     }
 
@@ -56,12 +71,18 @@ class Todo {
     }
 
     // CRUD: update
-    updateTask() {
+    updateTask(itemIndex, newText) {
+        this.taskList[itemIndex].text = newText;
+        this.renderList();
 
+        const task = this.taskList[itemIndex];
+
+        localStorage.setItem(task.id, JSON.stringify(task));
     }
 
     // CRUD: delete
     deleteTask(taskIndex) {
+        localStorage.removeItem(this.taskList[taskIndex].id);
         this.taskList = this.taskList.filter((item, index) => index !== taskIndex);
         this.renderList();
     }
@@ -75,7 +96,7 @@ class Todo {
             const removeBtn = item.querySelector('.btn.remove');
 
             editBtn.addEventListener('click', () => {
-                this.initTodoItemEditing(i);
+                this.editForm.show(i);
             })
             removeBtn.addEventListener('click', () => {
                 this.deleteTask(i);
@@ -83,29 +104,19 @@ class Todo {
         }
     }
 
-    initTodoItemEditing(taskIndex) {
-        const task = this.taskList[taskIndex];
+    getInfoFromLocalStorage() {
+        const keys = Object.keys(localStorage).sort();
 
-        const lightbox = document.querySelector('.lightbox');
-        const formUpdate = lightbox.querySelector('form.update');
-        const textarea = formUpdate.querySelector('textarea');
-        const buttonCancel = formUpdate.querySelector('button.cancel');
-        const buttonUpdate = formUpdate.querySelector('button.update');
+        for (let key of keys) {
+            const item = localStorage.getItem(key);
+            const obj = JSON.parse(item);
 
-        lightbox.dataset.form = 'update';
-        textarea.value = task.text;
-        lightbox.classList.add('show');
-
-        buttonCancel.addEventListener('click', e => {
-            e.preventDefault();
-            lightbox.classList.remove('show');
-        })
-        buttonUpdate.addEventListener('click', e => {
-            e.preventDefault();
-            this.taskList[taskIndex].text = textarea.value;
-            lightbox.classList.remove('show');
-            this.renderList();
-        })
+            if (key === 'last-id') {
+                this.lastCreatedID = obj;
+            } else {
+                this.taskList.push(obj);
+            }
+        }
     }
 }
 

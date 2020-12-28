@@ -1,4 +1,5 @@
 import { Todo } from './components/Todo.js';
+import { EditForm } from './components/EditForm.js';
 
 const addNewTask = document.querySelector('.add-new');
 const lightbox = document.querySelector('.lightbox');
@@ -12,6 +13,14 @@ const todo = new Todo({
     selector: 'main'
 });
 todo.init();
+
+const editForm = new EditForm({
+    selector: 'form.update',
+    todoObject: todo
+});
+editForm.init();
+
+todo.editForm = editForm;
 
 // add events
 addNewTask.addEventListener('click', () => {
@@ -32,11 +41,7 @@ buttonCancel.addEventListener('click', e => {
 
 buttonAdd.addEventListener('click', e => {
     e.preventDefault();
-    const task = {
-        text: textarea.value,
-        isCompleted: false
-    }
-    todo.addTask(task);
+    todo.addTask(textarea.value);
     textarea.value = '';
     lightbox.classList.remove('show');
 })
