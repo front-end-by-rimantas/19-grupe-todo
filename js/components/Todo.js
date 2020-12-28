@@ -4,6 +4,8 @@ class Todo {
 
         this.DOM = null;
         this.taskList = [];
+
+        this.editForm = null;
     }
 
     init() {
@@ -56,8 +58,9 @@ class Todo {
     }
 
     // CRUD: update
-    updateTask() {
-
+    updateTask(itemIndex, newText) {
+        this.taskList[itemIndex].text = newText;
+        this.renderList();
     }
 
     // CRUD: delete
@@ -75,37 +78,12 @@ class Todo {
             const removeBtn = item.querySelector('.btn.remove');
 
             editBtn.addEventListener('click', () => {
-                this.initTodoItemEditing(i);
+                this.editForm.show(i);
             })
             removeBtn.addEventListener('click', () => {
                 this.deleteTask(i);
             })
         }
-    }
-
-    initTodoItemEditing(taskIndex) {
-        const task = this.taskList[taskIndex];
-
-        const lightbox = document.querySelector('.lightbox');
-        const formUpdate = lightbox.querySelector('form.update');
-        const textarea = formUpdate.querySelector('textarea');
-        const buttonCancel = formUpdate.querySelector('button.cancel');
-        const buttonUpdate = formUpdate.querySelector('button.update');
-
-        lightbox.dataset.form = 'update';
-        textarea.value = task.text;
-        lightbox.classList.add('show');
-
-        buttonCancel.addEventListener('click', e => {
-            e.preventDefault();
-            lightbox.classList.remove('show');
-        })
-        buttonUpdate.addEventListener('click', e => {
-            e.preventDefault();
-            this.taskList[taskIndex].text = textarea.value;
-            lightbox.classList.remove('show');
-            this.renderList();
-        })
     }
 }
 
