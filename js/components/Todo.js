@@ -1,3 +1,5 @@
+import { Ajax } from './Ajax.js';
+
 class Todo {
     constructor(params) {
         this.selector = params.selector;
@@ -16,6 +18,12 @@ class Todo {
         this.updateStyle();
         this.getInfoFromLocalStorage();
         this.renderList();
+
+        const ajax = new Ajax({
+            targetFile: 'todos.json',
+            callback: this.importDataFromServer
+        });
+        ajax.send();
     }
 
     isValidSelector() {
@@ -117,6 +125,19 @@ class Todo {
                 this.taskList.push(obj);
             }
         }
+    }
+
+    importDataFromServer(data) {
+        // DISCLAIMER: tai nera tobulas variantas info sinchronizavimui!
+
+        // 1) priimame info is serverio kaip pradini sarasa
+        // 2) perskaitom k1 turim localStorage
+        // 3) is localStorage sarasa irasus perkeliam i serverio atsiusta sarasa
+        // 3b) jei localStorage ir serverio irasu ID sutampa, tai localStorage info overwrite'ina ir tampa naujausia
+        // 4) tai kas lieka yra up-to-date irasu sarasas
+
+        const serverInfo = JSON.parse(data);
+        console.log(serverInfo);
     }
 }
 
